@@ -1,18 +1,14 @@
 package com.example.shop.controller;
-
-
 import com.example.shop.dto.ProductDTO;
 import com.example.shop.model.Category;
 import com.example.shop.model.Product;
 import com.example.shop.service.CategoryService;
 import com.example.shop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -110,5 +106,27 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
+    @GetMapping("/admin/product/delete/{id}")
+    public String deleteProduct(@PathVariable Long id){
+        productService.removeProductById(id);
+        return "redirect:/admin/products";
+    }
 
+    @GetMapping("/admin/product/update/{id}")
+    public String updateProductGet(@PathVariable long id,Model model){
+        Product product = productService.getProductById(id).get();
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setName(product.getName());
+        productDTO.setPrice(product.getPrice());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setCategoryId(product.getCategory().getId());
+        productDTO.setWeight(product.getWeight());
+        productDTO.setImageName(product.getImageName());
+
+        model.addAttribute("categories",categoryService.gelAllCategories());
+        model.addAttribute("productDTO",productDTO);
+
+        return "productsAdd";
+    }
 }
