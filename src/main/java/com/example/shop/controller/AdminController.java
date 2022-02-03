@@ -9,7 +9,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.Optional;
 
 @Controller
 public class AdminController {
@@ -37,6 +40,22 @@ public class AdminController {
     public String postCatAdd(@ModelAttribute("category") Category category){
         categoryService.addCategory(category);
         return "redirect:/admin/categories";
+    }
+
+    @GetMapping("/admin/categories/delete/{id}")
+    public String deleteCat(@PathVariable Long id){
+        categoryService.removeCategoryById(id);
+        return  "redirect:/admin/categories";
+    }
+
+    @GetMapping("/admin/categories/update/{id}")
+    public String updateCategory(@PathVariable Long id,Model model){
+        Optional<Category> category = categoryService.getCategoryById(id);
+        if(category.isPresent()){
+            model.addAttribute("category",category.get());
+            return "categoriesAdd";
+        }else
+            return  "404";
     }
 
 }
