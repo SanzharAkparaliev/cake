@@ -1,8 +1,11 @@
 package com.example.shop.controller;
 
 
+import com.example.shop.dto.ProductDTO;
 import com.example.shop.model.Category;
+import com.example.shop.model.Product;
 import com.example.shop.service.CategoryService;
+import com.example.shop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Controller;
@@ -12,12 +15,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 public class AdminController {
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    ProductService productService;
 
     @GetMapping("/admin")
     public String adminHome(){
@@ -58,4 +65,19 @@ public class AdminController {
             return  "404";
     }
 
+    //Product Section
+
+    @GetMapping("/admin/products")
+    public String products(Model model){
+        List<Product> products = productService.getAllProduct();
+        model.addAttribute("products",products);
+        return "products";
+    }
+
+    @GetMapping("/admin/products/add")
+    public String productAddGet(Model model){
+        model.addAttribute("productDTO",new ProductDTO());
+        model.addAttribute("categories",categoryService.gelAllCategories());
+        return "productsAdd";
+    }
 }
