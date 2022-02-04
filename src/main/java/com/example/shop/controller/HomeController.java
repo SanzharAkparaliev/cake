@@ -17,7 +17,7 @@ public class HomeController {
     @Autowired
     CategoryService categoryService;
 
-    @GetMapping({"/","/"})
+    @GetMapping({"/","/home"})
     public String home(Model model){
         return "index";
     }
